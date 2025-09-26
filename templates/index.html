@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dolphin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+</head>
+<body class="light-mode">
+    <!-- Image Preview Modal -->
+    <div id="image-preview-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Send Image</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <img id="image-preview" src="" alt="Image preview">
+                <div class="caption-input">
+                    <label for="image-caption">Add a caption (optional):</label>
+                    <textarea id="image-caption" placeholder="Describe your image..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-image" class="btn-secondary">Cancel</button>
+                <button id="send-image" class="btn-primary">Send Image</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="chat-title">
+                <i class="fas fa-dolphin"></i>
+                <h1>Dolphin</h1>
+            </div>
+            <div class="chat-controls">
+                <button id="theme-toggle" class="icon-btn" title="Toggle Dark/Light Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="clear-chat" class="icon-btn" title="Clear Chat">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button id="new-session" class="icon-btn" title="New Conversation">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages">
+            {% if chat_history %}
+                {% for message in chat_history %}
+                    <div class="message {{ message.sender }}-message" data-message-id="{{ loop.index }}">
+                        <div class="message-content">
+                            {% if message.type == 'text' %}
+                                <p>{{ message.content|safe }}</p>
+                            {% elif message.type == 'image' %}
+                                <img src="{{ message.content }}" alt="Sent image" class="chat-image">
+                                {% if message.caption %}
+                                    <p class="image-caption">{{ message.caption }}</p>
+                                {% endif %}
+                            {% elif message.type == 'audio' %}
+                                <audio controls>
+                                    <source src="{{ message.content }}" type="audio/wav">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            {% endif %}
+                        </div>
+                        <div class="message-meta">
+                            <span class="message-time">{{ message.timestamp }}</span>
+                            <button class="copy-btn" data-message-id="{{ loop.index }}">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            {% if message.sender == 'bot' and message.type == 'text' %}
+<button class="speak-btn" data-message-id="{{ loop.index }}" title="Speak message">
+    <i class="fas fa-volume-up"></i>
+</button>
+{% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-chat">
+                    <i class="fas fa-comments"></i>
+                    <p>Start a conversation with Dolphin!</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="chat-input-container">
+            <div class="input-controls">
+                <label for="image-input" class="icon-btn" title="Send Image">
+                    <i class="fas fa-image"></i>
+                    <input type="file" id="image-input" accept="image/*" style="display: none;">
+                </label>
+                
+                <button id="record-audio" class="icon-btn" title="Record Audio">
+                    <i class="fas fa-microphone"></i>
+                </button>
+                <div id="recording-indicator" class="recording-indicator hidden">
+                    <div class="recording-dot"></div>
+                    <span>Recording...</span>
+                    
+                    <button id="stop-recording" class="btn-secondary">Stop</button>
+                </div>
+            </div>
+            <div class="text-input-container">
+                <input type="text" id="message-input" placeholder="Type a message...">
+                <button id="send-button" class="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+hon
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+Dolphin_env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.env/
+.env
+# Instance
+instance/
+
+# Database
+*.db
+*.sqlite3
+
+# Environment variables
+.env
+.env.production
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
